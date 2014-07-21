@@ -1,4 +1,5 @@
 Converts files with T-SQL quieries to the files with the same names but with *.txt extension and which contains results of quieries.
+
 Supports simple parameters, which can be added like this:
 
 	DECLARE @NumDataSource int;

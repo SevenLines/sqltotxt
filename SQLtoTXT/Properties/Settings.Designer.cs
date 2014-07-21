@@ -22,5 +22,17 @@ namespace SQLtoTXT.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".")]
+        public string LastDir {
+            get {
+                return ((string)(this["LastDir"]));
+            }
+            set {
+                this["LastDir"] = value;
+            }
+        }
     }
 }
