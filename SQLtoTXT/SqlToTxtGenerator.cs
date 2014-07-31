@@ -54,14 +54,38 @@ namespace sqltotxt
         Dictionary<string, string> parameters = new Dictionary<string, string>();
         SqlConnection connection = new SqlConnection();
 
+        public void GetScriptsPaths(String dirPath, List<String> sciptPaths)
+        {
+            try
+            {
+                sciptPaths.AddRange(Directory.GetFiles(dirPath, "*.sql"));
+                foreach (string d in Directory.GetDirectories(dirPath))
+                {
+                    GetScriptsPaths(d, sciptPaths);
+                }
+            }
+            catch (System.Exception excpt)
+            {
+                Console.WriteLine(excpt.Message);
+            }
+        }
+
         List<Script> FindScripts(DirectoryInfo dir)
         {
             scripts.Clear();
             parameters.Clear();
 
-            foreach (var f in dir.GetFiles())
+            var scriptPaths = new List<string>();
+            GetScriptsPaths(dir.FullName, scriptPaths);
+
+            foreach (var f in scriptPaths)
             {
-                var s = new Script(f);
+                var title = f.Replace(dir.FullName, "");
+                if (title.StartsWith("\\"))
+                {
+                    title = title.Substring(1);
+                }
+                var s = new Script(title, new FileInfo(f));
                 scripts.Add(s);
             }
 
@@ -119,39 +143,40 @@ namespace sqltotxt
 
         public bool Generate(string outputDir, bool append)
         {
+            // check output path
             if (String.IsNullOrEmpty(outputDir))
             {
                 Console.WriteLine(Resources.Failed);
                 return false;
             }
-                
-            if (!Directory.Exists(outputDir))
-            {
-                Directory.CreateDirectory(outputDir);
-            }
 
+            // opening connection
             if (!Connect())
             {
                 Console.WriteLine(Resources.Failed);
                 return false;
             }
 
-            var result = new StringBuilder();
 
+            // itterate over script files
+            var result = new StringBuilder();
             Console.WriteLine(Resources.ScriptsCountInfo, scripts.Count);
             for (var j=0; j<scripts.Count;++j)
             {
                 var s = scripts[j];
                 result.Clear();
-                String path = Path.Combine(outputDir, s.Title.Replace(".sql", ".txt"));
+                
+                // get script text
+                // binding parameters
                 String sqlText = s.Text(parameters);
                 if (String.IsNullOrEmpty(sqlText))
                     continue;
 
+
                 Console.WriteLine(Resources.ScriptExecutionBegin, j, scripts.Count, s.Title);
 
+                // execute command
                 var sql = new SqlCommand(sqlText, connection);
-
                 SqlDataReader reader;
                 try
                 {
@@ -169,7 +194,7 @@ namespace sqltotxt
                     break;
                 }
 
-
+                // itterate over result
                 while (reader.Read())
                 {
                     result.AppendLine(
@@ -179,6 +204,15 @@ namespace sqltotxt
                 }
                 reader.Close();
 
+                // create directories if not exists
+                String path = Path.Combine(outputDir, s.Title.Replace(".sql", ".txt"));
+                var fi = new FileInfo(path);
+                if (fi.DirectoryName != null && !Directory.Exists(fi.DirectoryName))
+                {
+                    Directory.CreateDirectory(fi.DirectoryName);
+                }
+
+                // write result into output file
                 try
                 {
                     if (append)

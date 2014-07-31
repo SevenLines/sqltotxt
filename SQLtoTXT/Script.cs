@@ -9,16 +9,16 @@ namespace sqltotxt
 {
     public class Script
     {
-        String text;
-        String title;
+        String _text;
+        String _title;
         Regex reg = new Regex(@"/\*\$(\w+)\*/(.+?)/\*\$\*/");
         Dictionary<string, string> prms = new Dictionary<string, string>();
 
-        public Script(FileInfo file)
+        public Script(String title, FileInfo file)
         {
-            using(StreamReader s = new StreamReader(file.OpenRead(), Encoding.Default)) {
+            using(var s = new StreamReader(file.OpenRead(), Encoding.Default)) {
                 String text = s.ReadToEnd();
-                Init(file.Name, text);
+                Init(title, text);
             }
         }
 
@@ -29,8 +29,8 @@ namespace sqltotxt
 
         public void Init(String title, String text)
         {
-            this.text = text;
-            this.title = title;
+            this._text = text;
+            this._title = title;
             foreach(Match m in reg.Matches(text)) {
                 prms.Add(m.Groups[1].Value, m.Groups[2].Value);
             }
@@ -38,7 +38,7 @@ namespace sqltotxt
 
         public String Title
         {
-            get { return title; }
+            get { return _title; }
         }
 
         public Dictionary<string, string> Params
@@ -52,7 +52,7 @@ namespace sqltotxt
 
         public String Text(Dictionary<String, String> prms)
         {
-            MatchEvaluator evaluator = new MatchEvaluator(new Func<Match, String>( m =>
+            var evaluator = new MatchEvaluator(new Func<Match, String>( m =>
             {
                 if (prms.ContainsKey(m.Groups[1].Value))
                 {
@@ -60,7 +60,7 @@ namespace sqltotxt
                 }
                 return m.Value;
             }));
-            return reg.Replace((String)this.text.Clone(), evaluator);
+            return reg.Replace((String)this._text.Clone(), evaluator);
         }
     }
 }
