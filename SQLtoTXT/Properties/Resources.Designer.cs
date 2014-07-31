@@ -61,11 +61,65 @@ namespace sqltotxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Have a nice day ^_^.
+        /// </summary>
+        internal static string Closing {
+            get {
+                return ResourceManager.GetString("Closing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connecting....
+        /// </summary>
+        internal static string Connecting {
+            get {
+                return ResourceManager.GetString("Connecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow one to create txt files with output result from sql files with sql code.
         /// </summary>
         internal static string Description {
             get {
                 return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnecting....
+        /// </summary>
+        internal static string Disconnecting {
+            get {
+                return ResourceManager.GetString("Disconnecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0,3}/{1,-3}] {2}.
+        /// </summary>
+        internal static string ScriptExecutionBegin {
+            get {
+                return ResourceManager.GetString("ScriptExecutionBegin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Found {0} scripts.
+        /// </summary>
+        internal static string ScriptsCountInfo {
+            get {
+                return ResourceManager.GetString("ScriptsCountInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success.
+        /// </summary>
+        internal static string Success {
+            get {
+                return ResourceManager.GetString("Success", resourceCulture);
             }
         }
     }

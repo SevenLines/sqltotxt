@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
+﻿using System.Collections.Generic;
 using CommandLine;
 using CommandLine.Text;
 
@@ -24,13 +20,13 @@ namespace sqltotxt
         public List<string> Parameters { get; set; }
 
         [Option('s', "show parameters", HelpText = "show available parameters")]
-        public string ListParameters { get; set; }
+        public bool ListParameters { get; set; }
 
-        [Option('c', "connection options", HelpText = "file with connection options:\n"
-            + "UserID=YourUsername\n"
-            + "Password=YourPassword\n"
-            + "DataSource=YourDataSourceName\n"
-            + "InitialCatalog=YourInitialCatalogName\n")]
+        [Option('c', "connection options", HelpText = "file with connection options:"
+            + "\n\tUserID=YourUsername"
+            + "\n\tPassword=YourPass"
+            + "\n\tDataSource=YourDataSourceName"
+            + "\n\tInitialCatalog=YourInitialCatalogName")]
         public string CredentialFile { get; set; }
 
         [HelpOption]
