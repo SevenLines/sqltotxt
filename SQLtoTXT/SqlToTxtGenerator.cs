@@ -24,21 +24,25 @@ namespace sqltotxt
                     connectionDict.Add(tuple.Value.Key, tuple.Value.Value);
                 }
             }
-                
 
+            int timeout;
+            int.TryParse(connectionDict.Default("UserID", "15"), out timeout);
             var connString = new SqlConnectionStringBuilder
             {
-                UserID = connectionDict.Default("UserID", "sa"), 
-                DataSource = connectionDict.Default("DataSource", "."), 
-                InitialCatalog = connectionDict.Default("InitialCatalog", "RoadsDB_DIRECT"), 
+                ApplicationName = System.Reflection.Assembly.GetEntryAssembly().GetName().Name,
+                ConnectTimeout = timeout,
+                UserID = connectionDict.Default("UserID", ""), 
+                DataSource = connectionDict.Default("DataSource", ""), 
+                InitialCatalog = connectionDict.Default("InitialCatalog", ""), 
                 Password = connectionDict.Default("Password", ""),
+                
             };
             connection.ConnectionString = connString.ToString();
         }
 
         public KeyValuePair<string, string>? ParseOptionLine(string line)
         {
-            var regex = new Regex(@"(\w+):\s*(\w+)");
+            var regex = new Regex(@"(\w+):\s*(\w+|[\(.)/]+)");
             var match = regex.Match(line);
 
             if(!match.Success) return null;
@@ -83,23 +87,41 @@ namespace sqltotxt
 
 
 
-        void Connect()
+        bool Connect()
         {
             Console.WriteLine(Resources.Connecting);
-            connection.Open();
+            try
+            {
+                connection.Open();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            return true;
         }
 
-        void Disconnect()
+        bool Disconnect()
         {
             Console.WriteLine(Resources.Disconnecting);
-            connection.Close();
+            try
+            {
+                connection.Close();
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            return true;
         }
 
         public bool Generate(string outputDir, bool append)
         {
             if (String.IsNullOrEmpty(outputDir))
             {
-                Console.WriteLine(Resources.Success);
+                Console.WriteLine(Resources.Failed);
                 return false;
             }
                 
@@ -108,7 +130,12 @@ namespace sqltotxt
                 Directory.CreateDirectory(outputDir);
             }
 
-            Connect();
+            if (!Connect())
+            {
+                Console.WriteLine(Resources.Failed);
+                return false;
+            }
+
             var result = new StringBuilder();
 
             Console.WriteLine(Resources.ScriptsCountInfo, scripts.Count);
@@ -124,26 +151,52 @@ namespace sqltotxt
                 Console.WriteLine(Resources.ScriptExecutionBegin, j, scripts.Count, s.Title);
 
                 var sql = new SqlCommand(sqlText, connection);
-                using (var reader = sql.ExecuteReader())
+
+                SqlDataReader reader;
+                try
                 {
-                    while (reader.Read())
+                    reader = sql.ExecuteReader();
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(Resources.SkipFile);
+                    continue;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    break;
+                }
+
+
+                while (reader.Read())
+                {
+                    result.AppendLine(
+                        String.Join("\t",
+                            Enumerable.Range(0, reader.FieldCount).Select(i => reader.GetValue(i)))
+                        );
+                }
+                reader.Close();
+
+                try
+                {
+                    if (append)
                     {
-                        result.AppendLine(
-                            String.Join("\t",
-                                Enumerable.Range(0, reader.FieldCount).Select(i => reader.GetValue(i)))
-                            );
+                        File.AppendAllText(path, result.ToString(), Encoding.Default);
+                    }
+                    else
+                    {
+                        File.WriteAllText(path, result.ToString(), Encoding.Default);
                     }
                 }
-                if (append)
+                catch (Exception ex)
                 {
-                    File.AppendAllText(path, result.ToString(), Encoding.Default);
-                }
-                else
-                {
-                    File.WriteAllText(path, result.ToString(), Encoding.Default);
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(Resources.SkipFile);
                 }
             }
-            
+
             Disconnect();
             Console.WriteLine(Resources.Success);
             return true;

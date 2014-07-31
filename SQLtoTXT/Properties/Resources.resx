@@ -138,4 +138,10 @@
   <data name="Closing" xml:space="preserve">
     <value>Have a nice day ^_^</value>
   </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="SkipFile" xml:space="preserve">
+    <value>Skipping file</value>
+  </data>
 </root>

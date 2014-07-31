@@ -97,6 +97,15 @@ namespace sqltotxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed.
+        /// </summary>
+        internal static string Failed {
+            get {
+                return ResourceManager.GetString("Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [{0,3}/{1,-3}] {2}.
         /// </summary>
         internal static string ScriptExecutionBegin {
@@ -111,6 +120,15 @@ namespace sqltotxt.Properties {
         internal static string ScriptsCountInfo {
             get {
                 return ResourceManager.GetString("ScriptsCountInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipping file.
+        /// </summary>
+        internal static string SkipFile {
+            get {
+                return ResourceManager.GetString("SkipFile", resourceCulture);
             }
         }
         
