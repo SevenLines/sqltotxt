@@ -11,9 +11,15 @@ namespace sqltotxt
 {
     class SqlToTxtGenerator
     {
-        public SqlToTxtGenerator(String inputDirPath, String credentialFile)
+        List<Script> _scripts = new List<Script>();
+        Dictionary<string, string> _parameters = new Dictionary<string, string>();
+        SqlConnection _connection = new SqlConnection();
+
+        public SqlToTxtGenerator(string inputDirPath, string credentialFile,
+            Dictionary<string, string> parameters)
         {
             FindScripts(new DirectoryInfo(inputDirPath));
+            _parameters = parameters;
             var connectionDict = new Dictionary<string, string>();
             if (!String.IsNullOrEmpty(credentialFile)) { 
                 foreach (var line in File.ReadLines(credentialFile))
@@ -37,7 +43,7 @@ namespace sqltotxt
                 Password = connectionDict.Default("Password", ""),
                 
             };
-            connection.ConnectionString = connString.ToString();
+            _connection.ConnectionString = connString.ToString();
         }
 
         public KeyValuePair<string, string>? ParseOptionLine(string line)
@@ -50,9 +56,7 @@ namespace sqltotxt
             return new KeyValuePair<string, string>(match.Groups[1].Value, match.Groups[2].Value);
         }
 
-        List<Script> scripts = new List<Script>();
-        Dictionary<string, string> parameters = new Dictionary<string, string>();
-        SqlConnection connection = new SqlConnection();
+ 
 
         public void GetScriptsPaths(String dirPath, List<String> sciptPaths)
         {
@@ -70,10 +74,18 @@ namespace sqltotxt
             }
         }
 
+        public void ShowParameters()
+        {
+            Console.WriteLine(Resources.SeparatorLine);
+            Console.WriteLine(Resources.Parameters);
+            Console.WriteLine(ParametersInfo); 
+            Console.WriteLine(Resources.SeparatorLine);
+        }
+
         List<Script> FindScripts(DirectoryInfo dir)
         {
-            scripts.Clear();
-            parameters.Clear();
+            _scripts.Clear();
+            _parameters.Clear();
 
             var scriptPaths = new List<string>();
             GetScriptsPaths(dir.FullName, scriptPaths);
@@ -86,27 +98,27 @@ namespace sqltotxt
                     title = title.Substring(1);
                 }
                 var s = new Script(title, new FileInfo(f));
-                scripts.Add(s);
+                _scripts.Add(s);
             }
 
-            foreach (var s in scripts)
+            foreach (var s in _scripts)
             {
                 foreach (var p in s.Params)
                 {
-                    if (!parameters.ContainsKey(p.Key))
+                    if (!_parameters.ContainsKey(p.Key))
                     {
-                        parameters.Add(p.Key, p.Value);
+                        _parameters.Add(p.Key, p.Value);
                     }
                 }
             }
 
-            return scripts;
+            return _scripts;
         }
 
-        public string ShowParameters
+        public string ParametersInfo
         {
             get { return String.Join("\n", 
-                parameters.Select(x => String.Format("{0}={1}", x.Key, x.Value)).ToArray()); }
+                _parameters.Select(x => String.Format("{0}={1}", x.Key, x.Value)).ToArray()); }
         }
 
 
@@ -116,7 +128,7 @@ namespace sqltotxt
             Console.WriteLine(Resources.Connecting);
             try
             {
-                connection.Open();
+                _connection.Open();
             }
             catch (Exception ex)
             {
@@ -131,7 +143,7 @@ namespace sqltotxt
             Console.WriteLine(Resources.Disconnecting);
             try
             {
-                connection.Close();
+                _connection.Close();
             }
             catch (SqlException ex)
             {
@@ -160,23 +172,24 @@ namespace sqltotxt
 
             // itterate over script files
             var result = new StringBuilder();
-            Console.WriteLine(Resources.ScriptsCountInfo, scripts.Count);
-            for (var j=0; j<scripts.Count;++j)
+            Console.WriteLine(Resources.ScriptsCountInfo, _scripts.Count);
+            ShowParameters();
+            for (var j=0; j<_scripts.Count;++j)
             {
-                var s = scripts[j];
+                var s = _scripts[j];
                 result.Clear();
                 
                 // get script text
                 // binding parameters
-                String sqlText = s.Text(parameters);
+                String sqlText = s.Text(_parameters);
                 if (String.IsNullOrEmpty(sqlText))
                     continue;
 
 
-                Console.WriteLine(Resources.ScriptExecutionBegin, j, scripts.Count, s.Title);
+                Console.WriteLine(Resources.ScriptExecutionBegin, j, _scripts.Count, s.Title);
 
                 // execute command
-                var sql = new SqlCommand(sqlText, connection);
+                var sql = new SqlCommand(sqlText, _connection);
                 SqlDataReader reader;
                 try
                 {

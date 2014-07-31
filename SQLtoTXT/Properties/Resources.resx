@@ -144,4 +144,10 @@
   <data name="SkipFile" xml:space="preserve">
     <value>Skipping file</value>
   </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parameters:</value>
+  </data>
+  <data name="SeparatorLine" xml:space="preserve">
+    <value>=-=-=-=-=-=-=-=-=-=</value>
+  </data>
 </root>

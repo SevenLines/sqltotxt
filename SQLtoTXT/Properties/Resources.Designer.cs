@@ -106,6 +106,15 @@ namespace sqltotxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameters:.
+        /// </summary>
+        internal static string Parameters {
+            get {
+                return ResourceManager.GetString("Parameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [{0,3}/{1,-3}] {2}.
         /// </summary>
         internal static string ScriptExecutionBegin {
@@ -120,6 +129,15 @@ namespace sqltotxt.Properties {
         internal static string ScriptsCountInfo {
             get {
                 return ResourceManager.GetString("ScriptsCountInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to =-=-=-=-=-=-=-=-=-=.
+        /// </summary>
+        internal static string SeparatorLine {
+            get {
+                return ResourceManager.GetString("SeparatorLine", resourceCulture);
             }
         }
         
