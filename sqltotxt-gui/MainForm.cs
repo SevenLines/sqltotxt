@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Data.SqlClient;
+using sqltotxt;
 
 
 namespace SQLtoTXT
@@ -39,33 +40,7 @@ namespace SQLtoTXT
             connection.Close();
         }
 
-        List<Script> FindScripts(String path)
-        {
-            scripts.Clear();
-            prms.Clear();
-
-            var dir = new DirectoryInfo(path);
-            foreach (var f in dir.GetFiles()) {
-                Script s = new Script(f);
-                scripts.Add(s);
-            }
-
-            foreach (var s in scripts)
-            {
-                foreach (var p in s.Params)
-                {
-                    if (!prms.ContainsKey(p.Key))
-                    {
-                        prms.Add(p.Key, p.Value);
-                    }
-                }
-            }
-
-            cmbKeys.DataSource = new BindingSource(prms, null);
-            cmbKeys.DisplayMember = "Key";
-
-            return scripts;
-        }
+        
 
         String getOutputDir()
         {

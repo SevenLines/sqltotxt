@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("sqltotxt")]
+[assembly: AssemblyTitle("SQLtoTXT")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("sqltotxt")]
+[assembly: AssemblyProduct("SQLtoTXT")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("fab16462-38bd-48ec-815b-ee90ef695872")]
+[assembly: Guid("29669daf-ac89-4f72-81dd-862c3a2ab444")]
 
 // Version information for an assembly consists of the following four values:
 //
