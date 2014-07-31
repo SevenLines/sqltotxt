@@ -88,6 +88,15 @@ namespace sqltotxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Directory &quot;{0}&quot; doesnt exist.
+        /// </summary>
+        internal static string DirectoryDoesntExist {
+            get {
+                return ResourceManager.GetString("DirectoryDoesntExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disconnecting....
         /// </summary>
         internal static string Disconnecting {
@@ -102,6 +111,15 @@ namespace sqltotxt.Properties {
         internal static string Failed {
             get {
                 return ResourceManager.GetString("Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output dir is not defined.
+        /// </summary>
+        internal static string OutputDirDoesNotExists {
+            get {
+                return ResourceManager.GetString("OutputDirDoesNotExists", resourceCulture);
             }
         }
         

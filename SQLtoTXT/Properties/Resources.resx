@@ -150,4 +150,10 @@
   <data name="SeparatorLine" xml:space="preserve">
     <value>=-=-=-=-=-=-=-=-=-=</value>
   </data>
+  <data name="OutputDirDoesNotExists" xml:space="preserve">
+    <value>Output dir is not defined</value>
+  </data>
+  <data name="DirectoryDoesntExist" xml:space="preserve">
+    <value>Directory "{0}" doesnt exist</value>
+  </data>
 </root>

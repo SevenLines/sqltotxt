@@ -38,12 +38,15 @@ namespace sqltotxt
             {
                 var reg = new Regex(@"(\w+)=(\w+)");
                 var output = new Dictionary<string, string>();
-                foreach (var item in ParametersArg)
+                if (ParametersArg != null)
                 {
-                    var m = reg.Match(item);
-                    if (m.Success)
+                    foreach (var item in ParametersArg)
                     {
-                        output.Add(m.Groups[1].Value, m.Groups[2].Value);
+                        var m = reg.Match(item);
+                        if (m.Success)
+                        {
+                            output.Add(m.Groups[1].Value, m.Groups[2].Value);
+                        }
                     }
                 }
                 return output;

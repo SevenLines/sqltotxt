@@ -15,11 +15,10 @@ namespace sqltotxt
         Dictionary<string, string> _parameters = new Dictionary<string, string>();
         SqlConnection _connection = new SqlConnection();
 
-        public SqlToTxtGenerator(string inputDirPath, string credentialFile,
-            Dictionary<string, string> parameters)
+        public SqlToTxtGenerator(string inputDirPath, string credentialFile)
         {
             FindScripts(new DirectoryInfo(inputDirPath));
-            _parameters = parameters;
+//            _parameters = parameters;
             var connectionDict = new Dictionary<string, string>();
             if (!String.IsNullOrEmpty(credentialFile)) { 
                 foreach (var line in File.ReadLines(credentialFile))
@@ -153,11 +152,12 @@ namespace sqltotxt
             return true;
         }
 
-        public bool Generate(string outputDir, bool append)
+        public bool Generate(string outputDir, bool append, Dictionary<string, string> parameters)
         {
             // check output path
             if (String.IsNullOrEmpty(outputDir))
             {
+                Console.WriteLine(Resources.OutputDirDoesNotExists);
                 Console.WriteLine(Resources.Failed);
                 return false;
             }
@@ -181,7 +181,7 @@ namespace sqltotxt
                 
                 // get script text
                 // binding parameters
-                String sqlText = s.Text(_parameters);
+                String sqlText = s.Text(parameters);
                 if (String.IsNullOrEmpty(sqlText))
                     continue;
 
