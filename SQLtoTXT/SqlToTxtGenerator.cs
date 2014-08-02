@@ -152,8 +152,35 @@ namespace sqltotxt
             return true;
         }
 
+        public void setParameters(Dictionary<string, string> parameters)
+        {
+            foreach (var p in parameters)
+            {
+                if (_parameters.ContainsKey(p.Key))
+                {
+                    _parameters[p.Key] = p.Value;
+                }
+            }
+        }
+
         public bool Generate(string outputDir, bool append, Dictionary<string, string> parameters)
         {
+            setParameters(parameters);
+
+            try
+            {
+//                outputDir = Path.GetDirectoryName(outputDir);
+                if (!Directory.Exists(outputDir))
+                {
+                    Directory.CreateDirectory(outputDir);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("{0}: {1}", outputDir, e.Message);
+                return false;
+            }
+
             // check output path
             if (String.IsNullOrEmpty(outputDir))
             {
@@ -173,6 +200,7 @@ namespace sqltotxt
             // itterate over script files
             var result = new StringBuilder();
             Console.WriteLine(Resources.ScriptsCountInfo, _scripts.Count);
+            
             ShowParameters();
             for (var j=0; j<_scripts.Count;++j)
             {
@@ -181,7 +209,7 @@ namespace sqltotxt
                 
                 // get script text
                 // binding parameters
-                String sqlText = s.Text(parameters);
+                String sqlText = s.Text(_parameters);
                 if (String.IsNullOrEmpty(sqlText))
                     continue;
 
@@ -218,7 +246,7 @@ namespace sqltotxt
                 reader.Close();
 
                 // create directories if not exists
-                String path = Path.Combine(outputDir, s.Title.Replace(".sql", ".txt"));
+                var path = Path.Combine(outputDir, s.Title.Replace(".sql", ".txt"));
                 var fi = new FileInfo(path);
                 if (fi.DirectoryName != null && !Directory.Exists(fi.DirectoryName))
                 {

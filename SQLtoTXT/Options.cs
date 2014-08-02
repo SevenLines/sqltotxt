@@ -18,9 +18,9 @@ namespace sqltotxt
             DefaultValue = false)]
         public bool Append { get; set; }
 
-        [OptionList('p', "params",
+        [OptionArray('p', "params",
             HelpText = "pass parameters as list of tuples: key1=value1 key2=value2 ...")]
-        public List<string> ParametersArg { get; set; }
+        public string[] ParametersArg { get; set; }
 
         [Option('s', "show parameters", HelpText = "show available parameters")]
         public bool ListParameters { get; set; }

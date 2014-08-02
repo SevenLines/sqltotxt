@@ -29,7 +29,11 @@ namespace sqltotxt
                 }
                 if (generator.Generate(options.OutputDir, options.Append, options.Parameters))
                 {
-                    Console.WriteLine(Resources.Closing);        
+                    Console.WriteLine(Resources.Closing);
+                }
+                else
+                {
+                    Console.ReadKey();
                 }
             }
         }
