@@ -36,7 +36,7 @@ namespace sqltotxt
         {
             get
             {
-                var reg = new Regex(@"(\w+)=(\w+)");
+                var reg = new Regex(@"(\w+)=(.+)");
                 var output = new Dictionary<string, string>();
                 if (ParametersArg != null)
                 {
