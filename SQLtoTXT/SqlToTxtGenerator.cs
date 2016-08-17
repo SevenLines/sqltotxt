@@ -30,18 +30,35 @@ namespace sqltotxt
                 }
             }
 
-            int timeout;
-            int.TryParse(connectionDict.Default("UserID", "15"), out timeout);
+//            int timeout;
+//            int.TryParse(connectionDict.Default("UserID", "15"), out timeout);
+//            var connString = new SqlConnectionStringBuilder
+//            {
+//                ApplicationName = System.Reflection.Assembly.GetEntryAssembly().GetName().Name,
+//                ConnectTimeout = timeout,
+//                UserID = connectionDict.Default("UserID", ""), 
+//                DataSource = connectionDict.Default("DataSource", ""), 
+//                InitialCatalog = connectionDict.Default("InitialCatalog", ""), 
+//                Password = connectionDict.Default("Password", ""),
+//                
+//            };
             var connString = new SqlConnectionStringBuilder
             {
                 ApplicationName = System.Reflection.Assembly.GetEntryAssembly().GetName().Name,
-                ConnectTimeout = timeout,
-                UserID = connectionDict.Default("UserID", ""), 
-                DataSource = connectionDict.Default("DataSource", ""), 
-                InitialCatalog = connectionDict.Default("InitialCatalog", ""), 
-                Password = connectionDict.Default("Password", ""),
-                
+                DataSource = connectionDict.Default("DataSource", "(local)"),
+                InitialCatalog = connectionDict.Default("InitialCatalog", ""),
             };
+            
+            if (connectionDict.ContainsKey("UserID"))
+            {
+                connString.UserID = connectionDict.Default("UserID", "");
+                if (connectionDict.ContainsKey("Password"))
+                    connString.Password = connectionDict.Default("Password", "");
+            }
+            else
+            {
+                connString.IntegratedSecurity = true;
+            }
             _connection.ConnectionString = connString.ToString();
         }
 
