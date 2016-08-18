@@ -49,7 +49,7 @@ namespace sqltotxt
                 InitialCatalog = connectionDict.Default("InitialCatalog", ""),
             };
             
-            if (connectionDict.ContainsKey("UserID"))
+            if (connectionDict.ContainsKey("UserID") && !String.IsNullOrEmpty(connectionDict["UserID"]))
             {
                 connString.UserID = connectionDict.Default("UserID", "");
                 if (connectionDict.ContainsKey("Password"))
@@ -64,7 +64,7 @@ namespace sqltotxt
 
         public KeyValuePair<string, string>? ParseOptionLine(string line)
         {
-            var regex = new Regex(@"(\w+):\s*(\w+|[\(.)/]+)");
+            var regex = new Regex(@"(\w+):\s*(.*)$");
             var match = regex.Match(line);
 
             if(!match.Success) return null;
